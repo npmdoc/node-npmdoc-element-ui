@@ -1,4 +1,7 @@
-# api documentation for  [element-ui (v1.2.8)](http://element.eleme.io)  [![npm package](https://img.shields.io/npm/v/npmdoc-element-ui.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-element-ui) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-element-ui.svg)](https://travis-ci.org/npmdoc/node-npmdoc-element-ui)
+# npmdoc-element-ui
+
+#### api documentation for  [element-ui (v1.2.9)](http://element.eleme.io)  [![npm package](https://img.shields.io/npm/v/npmdoc-element-ui.svg?style=flat-square)](https://www.npmjs.org/package/npmdoc-element-ui) [![travis-ci.org build-status](https://api.travis-ci.org/npmdoc/node-npmdoc-element-ui.svg)](https://travis-ci.org/npmdoc/node-npmdoc-element-ui)
+
 #### A Component Library for Vue.js.
 
 [![NPM](https://nodei.co/npm/element-ui.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/element-ui)
@@ -18,16 +21,60 @@
 ```json
 
 {
+    "name": "element-ui",
+    "version": "1.2.9",
+    "description": "A Component Library for Vue.js.",
+    "main": "lib/element-ui.common.js",
+    "files": [
+        "lib",
+        "src",
+        "packages"
+    ],
+    "scripts": {
+        "bootstrap": "yarn || npm i",
+        "build:file": "node build/bin/iconInit.js & node build/bin/build-entry.js & node build/bin/i18n.js & node build/bin/version.js",
+        "build:theme": "node build/bin/gen-cssfile && gulp build --gulpfile packages/theme-default/gulpfile.js && cp-cli packages/theme-default/lib lib/theme-default",
+        "build:utils": "cross-env BABEL_ENV=utils babel src --out-dir lib --ignore src/index.js",
+        "build:umd": "node build/bin/build-locale.js",
+        "clean": "rimraf lib && rimraf packages/*/lib && rimraf test/**/coverage && lerna clean --yes",
+        "deploy": "npm run deploy:build && gh-pages -d examples/element-ui --remote eleme && del examples/element-ui",
+        "deploy:build": "npm run build:file && cooking build -c build/cooking.demo.js -p && echo element.eleme.io>>examples/element-ui/CNAME",
+        "dev": "npm run bootstrap && npm run build:file && cooking watch -c build/cooking.demo.js -p",
+        "dev:play": "npm run build:file && cross-env PLAY_ENV=true cooking watch -c build/cooking.demo.js -p",
+        "dist": "npm run clean && npm run build:file && npm run lint && cooking build -c build/cooking.conf.js,build/cooking.common.js,build/cooking.component.js -p && npm run build:utils && npm run build:umd && npm run build:theme",
+        "dist:all": "node build/bin/build-all.js && npm run build:theme",
+        "i18n": "node build/bin/i18n.js",
+        "lint": "eslint src/**/* test/**/* packages/**/*.{js,vue} build/**/* --quiet",
+        "pub": "npm run bootstrap && sh build/git-release.sh && sh build/release.sh",
+        "pub:all": "npm run dist:all && lerna publish --skip-git && git commit -am 'publish independent packages' && git push eleme dev",
+        "test": "npm run lint && cross-env CI_ENV=/dev/ karma start test/unit/karma.conf.js --single-run",
+        "test:watch": "karma start test/unit/karma.conf.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git@github.com:ElemeFE/element.git"
+    },
+    "homepage": "http://element.eleme.io",
+    "keywords": [
+        "eleme",
+        "vue",
+        "components"
+    ],
+    "license": "MIT",
     "bugs": {
         "url": "https://github.com/ElemeFE/element/issues"
     },
+    "unpkg": "lib/index.js",
+    "style": "lib/theme-default/index.css",
     "dependencies": {
         "async-validator": "^1.6.6",
         "babel-helper-vue-jsx-merge-props": "^2.0.0",
         "deepmerge": "^1.2.0",
         "throttle-debounce": "^1.0.1"
     },
-    "description": "A Component Library for Vue.js.",
+    "peerDependencies": {
+        "vue": "^2.1.6"
+    },
     "devDependencies": {
         "babel-cli": "^6.14.0",
         "babel-core": "^6.14.0",
@@ -99,68 +146,7 @@
         "webpack-dev-server": "^1.15.1",
         "webpack-node-externals": "^1.5.4"
     },
-    "directories": {},
-    "dist": {
-        "shasum": "aa95bde8ad550d17b23b2a73ae84cfa1f0c2635d",
-        "tarball": "https://registry.npmjs.org/element-ui/-/element-ui-1.2.8.tgz"
-    },
-    "files": [
-        "lib",
-        "src",
-        "packages"
-    ],
-    "gitHead": "9f52a202851779a9b3e9873cd78311669c54338f",
-    "homepage": "http://element.eleme.io",
-    "keywords": [
-        "eleme",
-        "vue",
-        "components"
-    ],
-    "license": "MIT",
-    "main": "lib/element-ui.common.js",
-    "maintainers": [
-        {
-            "name": "baiyaaaaa"
-        },
-        {
-            "name": "qingwei.li"
-        },
-        {
-            "name": "yi.yang"
-        }
-    ],
-    "name": "element-ui",
-    "optionalDependencies": {},
-    "peerDependencies": {
-        "vue": "^2.1.6"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+ssh://git@github.com/ElemeFE/element.git"
-    },
-    "scripts": {
-        "bootstrap": "yarn || npm i",
-        "build:file": "node build/bin/iconInit.js & node build/bin/build-entry.js & node build/bin/i18n.js & node build/bin/version.js",
-        "build:theme": "node build/bin/gen-cssfile && gulp build --gulpfile packages/theme-default/gulpfile.js && cp-cli packages/theme-default/lib lib/theme-default",
-        "build:umd": "node build/bin/build-locale.js",
-        "build:utils": "cross-env BABEL_ENV=utils babel src --out-dir lib --ignore src/index.js",
-        "clean": "rimraf lib && rimraf packages/*/lib && rimraf test/**/coverage && lerna clean --yes",
-        "deploy": "npm run deploy:build && gh-pages -d examples/element-ui --remote eleme && del examples/element-ui",
-        "deploy:build": "npm run build:file && cooking build -c build/cooking.demo.js -p && echo element.eleme.io>>examples/element-ui/CNAME",
-        "dev": "npm run bootstrap && npm run build:file && cooking watch -c build/cooking.demo.js -p",
-        "dev:play": "npm run build:file && cross-env PLAY_ENV=true cooking watch -c build/cooking.demo.js -p",
-        "dist": "npm run clean && npm run build:file && npm run lint && cooking build -c build/cooking.conf.js,build/cooking.common.js,build/cooking.component.js -p && npm run build:utils && npm run build:umd && npm run build:theme",
-        "dist:all": "node build/bin/build-all.js && npm run build:theme",
-        "i18n": "node build/bin/i18n.js",
-        "lint": "eslint src/**/* test/**/* packages/**/*.{js,vue} build/**/* --quiet",
-        "pub": "npm run bootstrap && sh build/git-release.sh && sh build/release.sh",
-        "pub:all": "npm run dist:all && lerna publish --skip-git && git commit -am 'publish independent packages' && git push eleme dev",
-        "test": "npm run lint && cross-env CI_ENV=/dev/ karma start test/unit/karma.conf.js --single-run",
-        "test:watch": "karma start test/unit/karma.conf.js"
-    },
-    "style": "lib/theme-default/index.css",
-    "unpkg": "lib/index.js",
-    "version": "1.2.8"
+    "bin": {}
 }
 ```
 
